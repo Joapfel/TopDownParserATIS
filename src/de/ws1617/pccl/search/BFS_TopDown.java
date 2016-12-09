@@ -25,11 +25,10 @@ public class BFS_TopDown {
 		// initialize with start symbol
 		HashSet<TopDownParser> results = new HashSet<>();
 		HashSet<TopDownParser> init = initialize(grammar, lexicon, startSymbol, input);
-		for(TopDownParser initial : init)
-		{
+		for (TopDownParser initial : init) {
 			agenda.add(initial);
 		}
-		
+
 		// do actual search
 		while (!agenda.isEmpty()) {
 			TopDownParser top = agenda.peek();
@@ -62,10 +61,13 @@ public class BFS_TopDown {
 	private HashSet<TopDownParser> initialize(Grammar grammar, Lexicon lexicon, NonTerminal startSymbol, Terminal[] input) {
 		HashSet<TopDownParser> results = new HashSet<>();
 
-		//create initial TopDownParser
 		Stack<Symbol> predictionStack = new Stack<>();
 		predictionStack.push(startSymbol);
+		// create initial TopDownParser
 		TopDownParser init = new TopDownParser(predictionStack, input, grammar, lexicon);
+
+		// add initial TopDownParser to HashSet
+		results.add(init);
 		return results;
 	}
 

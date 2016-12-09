@@ -1,5 +1,6 @@
 package de.ws1617.pccl.parser;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -31,14 +32,13 @@ public class TopDownParser {
 	private Lexicon lexicon;
 
 	// constructor
-	public TopDownParser(Stack<Symbol> predictions, Terminal[] input,
-			Grammar grammar, Lexicon lexicon) {
+	public TopDownParser(Stack<Symbol> predictions, Terminal[] input, Grammar grammar, Lexicon lexicon) {
 		super();
 		this.predictions = predictions;
 		this.input = input;
 		this.grammar = grammar;
 		this.lexicon = lexicon;
-		this.inputIndex = 1;
+		this.inputIndex = 0;
 		analysis = new Stack<>();
 	}
 
@@ -62,20 +62,20 @@ public class TopDownParser {
 
 		if (input[inputIndex] != null && (!predictions.isEmpty())
 				&& !(predictions.size() > input.length - inputIndex)) {
+	
 
 			if (predictions.peek() instanceof NonTerminal) {
-
+			
 				// add all predicted successors
 				successors.addAll(predict());
 
-			} else if (predictions.peek() instanceof Terminal) {
-
+			}else if (predictions.peek() instanceof Terminal) {
+			
 				if (match()) {
 
-					TopDownParser clone = clone();
-					clone.setInputIndex(inputIndex++);
-					clone.predictions.pop();
-					successors.add(clone);
+					this.inputIndex++;
+					this.predictions.pop();
+					successors.add(this);
 
 				}
 
@@ -93,8 +93,9 @@ public class TopDownParser {
 	 * @return
 	 */
 	public boolean match() {
-		Terminal comp = (Terminal) predictions.pop();
-		return comp.getValue().equals(input[inputIndex]);
+		
+		Terminal comp = (Terminal) predictions.peek();
+		return inputIndex < input.length && comp.equals(input[inputIndex]);
 	}
 
 	/**
@@ -117,37 +118,41 @@ public class TopDownParser {
 		for (ArrayList<Symbol> tmp : grammar.getRuleForLHS(top)) {
 
 			TopDownParser clone = clone();
-			NonTerminal nt = (NonTerminal) clone.predictions.pop();
+			// NonTerminal nt = (NonTerminal)
+			clone.predictions.pop();
 
 			// for all NonTerminals
 			for (int i = tmp.size() - 1; i >= 0; i--) {
 				// reverse
 				clone.predictions.push(tmp.get(i));
 			}
-			//add rule to analysis stack
+			// add rule to analysis stack
 			clone.analysis.push(new Rule(top, tmp));
-			//add clone to the list
+			// add clone to the list
 			predict.add(clone);
 
 		}
-		
+
 		// for all rules in the lexicon
 		for (ArrayList<Terminal> tmp : lexicon.getRules(top)) {
 
 			TopDownParser clone = clone();
-			Terminal t = (Terminal) clone.predictions.pop();
+			// Terminal t = (Terminal)
+			clone.predictions.pop();
 
 			// since the lexicon is not allowed to have more than one symbol on
 			// rhs
 			clone.predictions.push(tmp.get(0));
-			//add rule to the analysis stack
-			clone.analysis.push(new Rule(top, new ArrayList<Symbol>(tmp)));
-			//add clone to the list
+			// add rule to the analysis stack
+			ArrayList<Symbol> listForRule = new ArrayList<>();
+			listForRule.addAll(tmp);
+			clone.analysis.push(new Rule(top, listForRule));
+			// add clone to the list
 			predict.add(clone);
 
 		}
 
-		//return all the clones
+		// return all the clones
 		return predict;
 	}
 
@@ -157,7 +162,7 @@ public class TopDownParser {
 	 * @return
 	 */
 	public boolean isGoal() {
-		return input.length - 1 == inputIndex;
+		return predictions.isEmpty() && input.length == inputIndex;
 	}
 
 	/**
@@ -169,13 +174,19 @@ public class TopDownParser {
 	public TopDownParser clone() {
 
 		TopDownParser clone = new TopDownParser();
-		// to do: set all the values
+		//set all the values
 		clone.setInputIndex(this.inputIndex);
 		clone.setInput(this.input);
 		clone.setGrammar(this.grammar);
 		clone.setLexicon(this.lexicon);
-		clone.setPredictions(this.predictions);
-		clone.setAnalysis(this.analysis);
+		
+		Stack<Symbol> clonePrediction = new Stack<>();
+		clonePrediction.addAll(this.predictions);
+		clone.setPredictions(clonePrediction);
+		
+		Stack<Rule> cloneAnalysis = new Stack<>();
+		cloneAnalysis.addAll(this.analysis);
+		clone.setAnalysis(cloneAnalysis);
 
 		return clone;
 	}
@@ -265,6 +276,12 @@ public class TopDownParser {
 		} else if (!predictions.equals(other.predictions))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "TopDownParser [predictions=" + predictions + ", analysis=" + analysis + ", input="
+				+ Arrays.toString(input) + ", inputIndex=" + inputIndex +  "]";
 	}
 
 }
