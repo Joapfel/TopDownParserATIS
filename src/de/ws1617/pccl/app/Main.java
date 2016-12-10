@@ -44,9 +44,6 @@ public class Main {
 			BFS_TopDown search = new BFS_TopDown();
 			HashSet<TopDownParser> goalConfigurations = search.search(terminals, grammar, lexicon, startSymbol);
 			int filenumber = 0;
-			for(TopDownParser parse : goalConfigurations){
-				System.out.println(parse.toString());
-			}
 
 			for (TopDownParser tD : goalConfigurations) {
 

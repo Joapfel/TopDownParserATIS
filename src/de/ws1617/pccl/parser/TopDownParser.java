@@ -118,7 +118,7 @@ public class TopDownParser {
 		for (ArrayList<Symbol> tmp : grammar.getRuleForLHS(top)) {
 
 			TopDownParser clone = clone();
-			// NonTerminal nt = (NonTerminal)
+			
 			clone.predictions.pop();
 
 			// for all NonTerminals
@@ -137,7 +137,7 @@ public class TopDownParser {
 		for (ArrayList<Terminal> tmp : lexicon.getRules(top)) {
 
 			TopDownParser clone = clone();
-			// Terminal t = (Terminal)
+		
 			clone.predictions.pop();
 
 			// since the lexicon is not allowed to have more than one symbol on
