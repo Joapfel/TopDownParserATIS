@@ -28,9 +28,9 @@ public class GrammarUtils {
 		NonTerminal lhsSymb = null;
 		//rhs is assigned after the first line of a block
 		ArrayList<Symbol> rhsList = null;
-		
+	
 		while ((line = br.readLine()) != null) {
-			
+		
 			//operation on lhs
 			if(line.trim().equals("")){
 				
@@ -43,26 +43,22 @@ public class GrammarUtils {
 				// the rule left hand side
 				lhsSymb = new NonTerminal(lhs);
 				
-			
-			}else{
+				//go to the next line
+				line = br.readLine();
+				
+			}
+			if(!line.trim().equals("")){
 				// iterate over rhs
 				String[] rhsSplit = line.split("\\s+");
 				rhsList = new ArrayList<>();
 				for (int i = 0; i < rhsSplit.length; i++) {
 					String symb = rhsSplit[i];
-					Symbol s = null;
-					if (NonTerminal.isNonTerminal(symb)) {
-						s = new NonTerminal(symb);
-					} else {
-						System.out.println("terminal in rhs: " + s);
-						s = new Terminal(symb);
-					}
+					Symbol s = new NonTerminal(symb);
 					rhsList.add(s);
 				}
 				
 			}
 			gr.addRule(lhsSymb, rhsList);
-			
 		}
 		br.close();
 
@@ -84,23 +80,28 @@ public class GrammarUtils {
 
 		while ((line = br.readLine()) != null) {
 			if (!line.trim().equals("")) {
-				String[] splt = line.split("-->");
+				String[] splt = line.split("\\s+");
+				
+				//lexical item in this case
 				String lhs = splt[0].trim();
+				//the corresponding symbol
 				String rhs = splt[1].trim();
 
 				// the rule left hand side
-				NonTerminal lhsSymb = new NonTerminal(lhs);
+				NonTerminal rhsSymb = new NonTerminal(rhs);
 
-				String[] rhsSplit = rhs.split("\\s+");
-				ArrayList<Terminal> rhsList = new ArrayList<>();
+				String[] lhsSplit = lhs.split("\\s+");
+				ArrayList<Terminal> lhsList = new ArrayList<>();
 
-				for (int i = 0; i < rhsSplit.length; i++) {
-					rhsList.add(new Terminal(rhsSplit[i]));
+				for (int i = 0; i < lhsSplit.length; i++) {
+					lhsList.add(new Terminal(lhsSplit[i]));
 				}
-				lex.addRule(lhsSymb, rhsList);
+				lex.addRule(rhsSymb, lhsList);
+			
 			}
 		}
 		br.close();
+
 		return lex;
 	}
 }

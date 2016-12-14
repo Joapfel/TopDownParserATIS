@@ -1,9 +1,0 @@
-[PR] --> i
-[PR] --> her
-[V] --> saw
-[V] --> duck
-[N] --> duck
-[N] --> telescope
-[P] --> with
-[D] --> a
-[D] --> her

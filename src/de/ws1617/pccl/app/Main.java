@@ -28,6 +28,7 @@ public class Main {
 			Lexicon lexicon = GrammarUtils.readLexicon(args[1]);
 			NonTerminal startSymbol = new NonTerminal(args[2]);
 			String input = args[3];
+			
 
 			// split by whitespace
 			String[] splt = input.split("\\s+");
@@ -43,13 +44,11 @@ public class Main {
 
 			BFS_TopDown search = new BFS_TopDown();
 			HashSet<TopDownParser> goalConfigurations = search.search(terminals, grammar, lexicon, startSymbol);
-			int filenumber = 0;
+			//int filenumber = 0;
 
 			for (TopDownParser tD : goalConfigurations) {
 
-				TreeUtils.createJPG("file" + filenumber, tD.getAnalysis(), startSymbol);
-				filenumber++;
-
+				System.out.println(tD.toString());
 			}
 
 			// TODO implement me !
