@@ -23,19 +23,31 @@ public class GrammarUtils {
 
 		String line = "";
 		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(path))));
-
+		
+		//lhs is assigned after a empty line
+		NonTerminal lhsSymb = null;
+		//rhs is assigned after the first line of a block
+		ArrayList<Symbol> rhsList = null;
+		
 		while ((line = br.readLine()) != null) {
-			if (!line.trim().equals("")) {
-				String[] splt = line.split("-->");
-				String lhs = splt[0].trim();
-				String rhs = splt[1].trim();
-
+			
+			//operation on lhs
+			if(line.trim().equals("")){
+				
+				//if it was empty read the next line which is lhs
+				line = br.readLine();
+				
+				//it should be only one word so no need to split
+				String lhs = line.trim();
+				
 				// the rule left hand side
-				NonTerminal lhsSymb = new NonTerminal(lhs);
-
+				lhsSymb = new NonTerminal(lhs);
+				
+			
+			}else{
 				// iterate over rhs
-				String[] rhsSplit = rhs.split("\\s+");
-				ArrayList<Symbol> rhsList = new ArrayList<>();
+				String[] rhsSplit = line.split("\\s+");
+				rhsList = new ArrayList<>();
 				for (int i = 0; i < rhsSplit.length; i++) {
 					String symb = rhsSplit[i];
 					Symbol s = null;
@@ -47,8 +59,10 @@ public class GrammarUtils {
 					}
 					rhsList.add(s);
 				}
-				gr.addRule(lhsSymb, rhsList);
+				
 			}
+			gr.addRule(lhsSymb, rhsList);
+			
 		}
 		br.close();
 
