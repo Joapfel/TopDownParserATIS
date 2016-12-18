@@ -30,7 +30,7 @@ public class BFS_TopDown {
 		}
 
 		// do actual search
-		while (!agenda.isEmpty()) {
+		while (!agenda.isEmpty()){
 
 			TopDownParser top = agenda.peek();
 			if (top.isGoal()) {
