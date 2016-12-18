@@ -29,10 +29,15 @@ public class GrammarUtils {
 		//rhs is assigned after the first line of a block
 		ArrayList<Symbol> rhsList = null;
 	
+		boolean firstLine = true;
+		
 		while ((line = br.readLine()) != null) {
 		
 			//operation on lhs
-			if(line.trim().equals("")){
+			if(line.trim().equals("") || firstLine){
+				
+				//needed only for the first block
+				firstLine = false;
 				
 				//if it was empty read the next line which is lhs
 				line = br.readLine();

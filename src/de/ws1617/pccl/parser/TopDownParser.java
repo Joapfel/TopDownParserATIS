@@ -116,6 +116,7 @@ public class TopDownParser {
 
 		// for all rules in the grammar
 		for (ArrayList<Symbol> tmp : grammar.getRuleForLHS(top)) {
+			if(Grammar.isUnitRecursive(top, tmp)) return predict;
 
 			TopDownParser clone = clone();
 			
@@ -144,7 +145,7 @@ public class TopDownParser {
 			// rhs
 			clone.predictions.push(tmp.get(0));
 			// add rule to the analysis stack
-			ArrayList<Symbol> listForRule = new ArrayList<>();
+			ArrayList<Symbol> listForRule = new ArrayList<>(tmp.size());//dont need to resize
 			listForRule.addAll(tmp);
 			clone.analysis.push(new Rule(top, listForRule));
 			// add clone to the list
@@ -280,6 +281,7 @@ public class TopDownParser {
 
 	@Override
 	public String toString() {
+
 		StringBuilder string = new StringBuilder();
 		Stack<Rule> tmp = new Stack<>();
 		while(!analysis.isEmpty()){
@@ -293,6 +295,7 @@ public class TopDownParser {
 	
 		}
 		return string.toString();
+
 	}
 
 }

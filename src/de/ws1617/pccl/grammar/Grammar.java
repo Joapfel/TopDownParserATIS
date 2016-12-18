@@ -119,5 +119,10 @@ public class Grammar {
 	public Set<NonTerminal> getNonTerminals() {
 		return nts;
 	}
+	
+	//look if a rule is unit recursive like: A ---> A
+	public static boolean isUnitRecursive(Symbol lhs, ArrayList<Symbol> rhs){
+		return rhs.size()==1 && lhs.equals(rhs.get(0));
+	}
 
 }
