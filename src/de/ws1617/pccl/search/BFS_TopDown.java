@@ -31,7 +31,7 @@ public class BFS_TopDown {
 
 		// do actual search
 		while (!agenda.isEmpty()) {
-			System.out.println("hello world");
+			
 			TopDownParser top = agenda.peek();
 			if (top.isGoal()) {
 				results.add(top);
